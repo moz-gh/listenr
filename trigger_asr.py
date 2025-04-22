@@ -3,26 +3,21 @@ import sys
 import os
 import logging
 
-# Basic logging for the trigger script itself
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - TRIGGER - %(message)s')
 
-# Use XDG_RUNTIME_DIR if available and fallback to /tmp
-signal_dir = os.environ.get('XDG_RUNTIME_DIR', '/tmp')
-pid_file = os.path.join(signal_dir, "asr_service.pid") # Store main service PID
+signal_dir = '/tmp'
+
+pid_file = os.path.join(signal_dir, "asr_service.pid")
 
 def create_signal(signal_name):
     signal_file = os.path.join(signal_dir, signal_name)
     logging.info(f"Creating signal file: {signal_file}")
     try:
-        # Check if main service is running (optional but good)
         if not os.path.exists(pid_file):
-             logging.warning("Main ASR service PID file not found. Is it running?")
-             # Should we try to start it? For now, just signal.
+            logging.warning("Main ASR service PID file not found. Is it running?")
 
-        # Create signal file
         with open(signal_file, 'w') as f:
-             f.write('trigger') # Content doesn't matter
-        # The background service should remove this file once processed
+            f.write('trigger')
     except IOError as e:
         logging.error(f"Error creating signal file {signal_file}: {e}")
 

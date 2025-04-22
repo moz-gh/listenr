@@ -2,58 +2,74 @@ import subprocess
 import logging
 import config_manager as cfg # Use alias for clarity
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Configure logging (will be configured by main.py, but set basic here as fallback)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(cfg.APP_NAME) # Use consistent logger name
 
-notify_send_available = None # Check once
+notify_send_available = False # This will be set by main.py after checking
 
-def check_notify_send():
+def set_notify_send_available(available):
+    """Allows main.py to set the availability status."""
     global notify_send_available
-    if notify_send_available is None:
-         try:
-             subprocess.run(['which', 'notify-send'], check=True, capture_output=True)
-             notify_send_available = True
-             logging.info("notify-send command found.")
-         except (subprocess.CalledProcessError, FileNotFoundError):
-             notify_send_available = False
-             logging.warning("notify-send command not found. Install libnotify-bin for notifications.")
-    return notify_send_available
+    notify_send_available = available
 
 def send_notification(summary, body="", icon_name_cfg_key='app_icon', urgency='low'):
     """Sends desktop notification if enabled and possible."""
     if not cfg.get_bool_setting('UI', 'show_notifications'):
         return
 
-    if not check_notify_send():
-        if 'suppress_notify_warning' not in globals(): # Show warning only once
-             logging.warning("Cannot send notification: notify-send not available.")
-             globals()['suppress_notify_warning'] = True
+    if not notify_send_available:
+        # Log warning only once per session perhaps? Handled by main.py's initial check now.
+        # logger.warning("Cannot send notification: notify-send not available.")
         return
 
     icon_name = cfg.get_setting('Icons', icon_name_cfg_key)
 
+    # Build command - Removed --transient based on previous user feedback
     cmd = [
         'notify-send',
         '--app-name', cfg.APP_NAME,
         '--icon', icon_name,
         '--urgency', urgency, # low, normal, critical
+        # '--transient', # Removed
         summary
     ]
     if body:
         cmd.append(body)
 
     try:
-        subprocess.run(cmd, check=True, timeout=2)
+        # Run detached? No, short command.
+        subprocess.run(cmd, check=True, timeout=2, capture_output=True) # Capture output to hide it
+        logger.debug(f"Sent notification: {summary}")
     except FileNotFoundError:
-         # Should be caught by check_notify_send, but as fallback
-         logging.error("notify-send command unexpectedly not found during execution.")
-         notify_send_available = False # Mark as unavailable
+        # Should not happen if check in main is done, but safety first
+        logger.error("notify-send command not found during execution.")
+        set_notify_send_available(False) # Mark as unavailable
     except subprocess.TimeoutExpired:
-         logging.warning("notify-send command timed out.")
+         logger.warning(f"notify-send command timed out for: {summary}")
     except subprocess.CalledProcessError as e:
-         logging.error(f"notify-send failed: {e}")
+         # Log stderr from notify-send if it failed
+         logger.error(f"notify-send failed for '{summary}': {e.stderr.decode('utf-8', errors='ignore').strip()}")
     except Exception as e:
-         logging.error(f"Unexpected error sending notification: {e}")
-
-# Initialize check
-check_notify_send()
+         logger.error(f"Unexpected error sending notification '{summary}': {e}")
+         
+def run_command(cmd_list):
+    """Runs a command, returns stdout, handles errors."""
+    try:
+        # Use capture_output=True to prevent command output unless error
+        result = subprocess.run(cmd_list, capture_output=True, text=True, check=True, timeout=5)
+        return result.stdout.strip()
+    except FileNotFoundError:
+        # Log error only if it's not the initial notify-send check failing
+        if not (cmd_list[0] == 'which' and cmd_list[1] == 'notify-send' and notify_send_available is False):
+             logger.error(f"Command not found: {cmd_list[0]}")
+        return None
+    except subprocess.CalledProcessError as e:
+         logger.debug(f"Command failed: {' '.join(cmd_list)} -> {e.stderr.decode('utf-8', errors='ignore').strip()}")
+         return None
+    except subprocess.TimeoutExpired:
+         logger.warning(f"Command timed out: {' '.join(cmd_list)}")
+         return None
+    except Exception as e:
+         logger.error(f"Unexpected error running {' '.join(cmd_list)}: {e}")
+         return None
