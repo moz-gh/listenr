@@ -111,11 +111,17 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     pip install -r requirements.txt
     ```
 
-6.  **Create Configuration Directory & File:**
+6.  **Add env file**:
+    i. Copy this example.env file and rename the copy to .env in the same directory as the commander.py script (or the project root, depending on where you run it from).
+    ii. Edit the .env file.
+    iii. Replace "your_openai_api_key_here" with your actual OpenAI API key.
+    iv. Optionally, uncomment and change OPENAI_MODEL or EDITOR if you want to override the defaults.
+
+7.  **Create Configuration Directory & File:**
     The script will automatically create a default configuration file on its first run if it doesn't exist. Run the main script once manually (see Troubleshooting section) or start the service (Step 9) to generate it. The file will be located at:
     `~/.config/asr-indicator/config.ini`
 
-7.  **Review and Edit `config.ini`:**
+8.  **Review and Edit `config.ini`:**
     **After the file is created**, open `~/.config/asr-indicator/config.ini` with a text editor. Review and adjust settings for your hardware and preferences:
 
     - **`[Whisper]`:** `model_size`, `device` (cpu/cuda), `compute_type`.
@@ -125,13 +131,13 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     - **`[UI]`:** `show_notifications`, `hotkey_display`.
     - **`[Icons]`:** Icon names if defaults don't work with your theme.
 
-8.  **Make Scripts Executable:**
+9.  **Make Scripts Executable:**
 
     ```bash
     chmod +x main.py trigger_asr.py
     ```
 
-9.  **Set up Background Service (systemd):**
+10. **Set up Background Service (systemd):**
 
     - Create/edit `~/.config/systemd/user/asr-indicator.service`.
     - **You MUST replace `<absolute_path_to_repo>` with the actual full path where you cloned the repository.**
@@ -166,7 +172,7 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     `
     _(Note: The service needs to run at least once to generate the default config if it didn't exist)._
 
-10. **Configure System Hotkeys:**
+11. **Configure System Hotkeys:**
     - Go to Pop!\_OS Settings -> Keyboard -> View and Customize Shortcuts -> Custom Shortcuts.
     - **You MUST replace `<absolute_path_to_repo>` with the actual full path where you cloned the repository.**
     - **Add Shortcut 1 (Start/Resume):**

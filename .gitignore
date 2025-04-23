@@ -8,6 +8,6 @@ __pycache__/
 *.egg-info/
 *.egg
 *.log
-*.env
+.env
 
 venv/
