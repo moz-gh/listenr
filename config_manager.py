@@ -54,10 +54,10 @@ DEFAULT_CONFIG = {
     'Commands': {
         'open_browser': r"^(?:(?:please|can you)\s+)?open(?:\s+the)?\s+browser[\s,.!?]*$ ::: firefox",
         'search_web': r'^(?:(?:please|can you)\s+)?(?:search|find)\s+(?:web\s+)?for\s+(?:um|uh)?\s*(.+?)[\s,.!?]*$ ::: firefox https://duckduckgo.com/?q="{0}"',
-        'run_backup': r"^(?:please\s+)?run(?:\s+the)?\s+backup\s+script[\s,.!?]*$ ::: /home/gabriel/Scripts/my_backup.sh",
-        'new_meeting_note': r"^(?:create|make|new)(?:\s+a)?\s+(?:meeting\s+)?note[\s,.!?]*$ ::: NEW_NOTE::/home/gabriel/Documents/Meetings/",
-        'log_alpha': r"^log(?:\s+to)?\s+project\s+alpha\s+(?:um|uh)?\s*(.+)$ ::: APPEND_NOTE::/home/gabriel/Projects/Alpha/log.txt",
-        'ask_llm': r'^(?:ask|tell|query)(?:\s+the)?\s+llm\s+(?:about|for|uh|um)?\s*(.+?)\.?[\s,.!?]*$ ::: /home/gabriel/Code/llm-scripts/query.sh "{0}"',
+        'run_backup': r"^(?:please\s+)?run(?:\s+the)?\s+backup\s+script[\s,.!?]*$ ::: ~/Scripts/my_backup.sh",
+        'new_meeting_note': r"^(?:create|make|new)(?:\s+a)?\s+(?:meeting\s+)?note[\s,.!?]*$ ::: NEW_NOTE::~/Documents/Meetings/",
+        'log_alpha': r"^log(?:\s+to)?\s+project\s+alpha\s+(?:um|uh)?\s*(.+)$ ::: APPEND_NOTE::~/Projects/Alpha/log.txt",
+        'ask_llm': r'^(?:ask|tell|query)(?:\s+the)?\s+llm\s+(?:about|for|uh|um)?\s*(.+?)\.?[\s,.!?]*$ ::: ~/Code/llm-scripts/query.sh "{0}"',
         # Add more default commands if desired
     }
 }
