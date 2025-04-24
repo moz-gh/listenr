@@ -84,7 +84,7 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     Open your terminal and clone this repository to your preferred location:
 
     ```bash
-    git clone github.com/moz-gh/listenr
+    git clone https://github.com/moz-gh/listenr
     cd listenr
     ```
 
@@ -165,15 +165,18 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
       ```
 
     - Enable and start the service:
-      `bash
+
+      ```bash
       systemctl --user daemon-reload
       systemctl --user enable --now asr-indicator.service
 
-    # Check status: systemctl --user status asr-indicator.service
+      # Check status:
+      systemctl --user status asr-indicator.service
 
-    # View logs: journalctl --user -u asr-indicator.service -f
+      # View logs:
+      journalctl --user -u asr-indicator.service -f
+      ```
 
-    `
     _(Note: The service needs to run at least once to generate the default config if it didn't exist)._
 
 11. **Configure System Hotkeys:**
