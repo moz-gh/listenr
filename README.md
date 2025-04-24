@@ -84,8 +84,8 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     Open your terminal and clone this repository to your preferred location:
 
     ```bash
-    git clone <your-repository-url> # Replace <your-repository-url> with the actual URL
-    cd <repository-directory-name> # Change into the cloned directory
+    git clone github.com/moz-gh/listenr
+    cd listenr
     ```
 
     _(All subsequent commands assume you are running them from within this main project directory)._
@@ -112,9 +112,13 @@ This project provides a background service for Linux desktops (tested on Pop!\_O
     ```
 
 6.  **Add env file**:
+
     i. Copy this example.env file and rename the copy to .env in the same directory as the commander.py script (or the project root, depending on where you run it from).
+
     ii. Edit the .env file.
+
     iii. Replace "your_openai_api_key_here" with your actual OpenAI API key.
+
     iv. Optionally, uncomment and change OPENAI_MODEL or EDITOR if you want to override the defaults.
 
 7.  **Create Configuration Directory & File:**
